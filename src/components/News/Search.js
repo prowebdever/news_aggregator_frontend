@@ -1,22 +1,31 @@
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
+import Button from '@mui/material/Button';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from '@mui/material/TextField';
 import React, { useState } from 'react';
 
 const Search = (props) => {
   const [search, setSearch] = useState('');
 
+  const handleSearch = () => {
+    props.searchNews(search);
+  };
+
   return (
-    <InputGroup className="mb-3">
-      <Form.Control
-        placeholder="Search"
-        value={search}
-        onChange={(e) => { setSearch(e.target.value); }}
-      />
-      <Button variant="outline-secondary" id="button-addon2" onClick={() => { props.searchNews(search); }}>
-        Search
-      </Button>
-    </InputGroup>
+    <TextField
+      label="Search"
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      fullWidth
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <Button variant="outlined" onClick={handleSearch}>
+              Search
+            </Button>
+          </InputAdornment>
+        ),
+      }}
+    />
   );
 };
 

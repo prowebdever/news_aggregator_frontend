@@ -1,30 +1,24 @@
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Row, Col } from 'react-bootstrap';
-import {
-  Header, Container, card, selectStyle, DateStyle, formButton
-} from './style';
 import HttpService from '../../services/httpService';
 
 const Filter = (props) => {
   const [categories, setCategories] = useState([]);
   const [authors, setAuthors] = useState([]);
-  const [filterSources, setFilterSources] = useState('');
-  const [filterCategories, setFilterCategories] = useState('');
-  const [filterAuthors, setFilterAuthors] = useState('');
-  const [filterString, setFilterString] = useState('');
-  const [date, setDate] = useState('');
+  const [filterSources, setFilterSources] = useState([]);
+  const [filterCategories, setFilterCategories] = useState([]);
+  const [filterAuthors, setFilterAuthors] = useState([]);
+  const [filterDate, setFilterDate] = useState('');
 
   const filterData = () => {
-    setFilterString(`source_id=${filterSources}&category=${filterCategories}&author=${filterAuthors}&date=${date}`);
+    const filterString = `source_id=${filterSources.join(',')}&category=${filterCategories.join(',')}&author=${filterAuthors.join(',')}&date=${filterDate}`;
     props.setFilter(filterString);
-  };
-
-  const selectSource = (e) => {
-    console.log(filterSources);
-    setFilterSources([].slice.call(e.target.selectedOptions).map((item) => item.value));
   };
 
   const fetchFilterData = () => {
@@ -43,7 +37,7 @@ const Filter = (props) => {
         if (parsedData.preferred_sources) { setFilterSources(preferredSources); }
         if (parsedData.preferred_categories) { setFilterCategories(preferredCategories); }
         if (parsedData.preferred_authors) { setFilterAuthors(preferredAuthors); }
-        setFilterString(`source_id=${preferredSources}&category=${preferredCategories}&author=${preferredAuthors}&date=${date}`);
+        setFilterDate(preferredDate);
       });
     } catch (error) {
       console.error(error);
@@ -54,64 +48,86 @@ const Filter = (props) => {
     fetchFilterData();
   }, []);
 
-  useEffect(() => {
-    filterData();
-  }, [filterString]);
-
   return (
-    <Container>
-      <Row>
-        <Col
-          sm={12}
-          md={3}
-          lg={3}
-          xl={3}
-        >
-          <Form.Label style={{ color: '#fff' }}>Select Source</Form.Label>
-          <Form.Select multiple aria-label="Default select example" style={selectStyle} onChange={(e) => selectSource(e)}>
-            <option value="1" selected={filterSources.includes('1')}>news api</option>
-            <option value="2" selected={filterSources.includes('2')}>the guardian</option>
-            <option value="3" selected={filterSources.includes('3')}>new york times</option>
-          </Form.Select>
-        </Col>
-        <Col
-          sm={12}
-          md={3}
-          lg={3}
-          xl={3}
-        >
-          <Form.Label style={{ color: '#fff' }}>Select Category</Form.Label>
-          <Form.Select multiple aria-label="Default select example" style={selectStyle} onChange={(e) => setFilterCategories([].slice.call(e.target.selectedOptions).map((item) => item.value))}>
-            {categories.map((category) => <option key={category} value={category} selected={filterCategories.includes(category)}>{category}</option>) }
-          </Form.Select>
-        </Col>
-        <Col
-          sm={12}
-          md={3}
-          lg={3}
-          xl={3}
-        >
-          <Form.Label style={{ color: '#fff' }}>Select Author</Form.Label>
-          <Form.Select multiple aria-label="Default select example" style={selectStyle} onChange={(e) => setFilterAuthors([].slice.call(e.target.selectedOptions).map((item) => item.value))}>
-            {authors.map((author) => <option key={author} value={author} selected={filterAuthors.includes(author)}>{author}</option>)}
-          </Form.Select>
-        </Col>
-        <Col
-          sm={12}
-          md={3}
-          lg={3}
-          xl={3}
-        >
-          <Form.Label style={{ color: '#fff' }}>Select Publish Date</Form.Label>
-          <input type="date" name="" id="" style={DateStyle} onChange={(e) => { setDate(e.target.value); }} />
-        </Col>
-      </Row>
-      <Row>
-        <Button variant="primary" type="submit" style={formButton} onClick={() => { filterData(); }}>
-          Filter
-        </Button>
-      </Row>
-    </Container>
+    <>
+      <Grid container spacing={5}>
+        <Grid item xs={12} md={3} lg={3} xl={3}>
+          <FormControl fullWidth>
+            <InputLabel id="source-label">Select Source</InputLabel>
+            <Select
+              labelId="source-label"
+              id="source-select"
+              multiple
+              value={filterSources}
+              onChange={(e) => setFilterSources(e.target.value)}
+              label="Select Source"
+            >
+              <MenuItem value={1}>NewsApi</MenuItem>
+              <MenuItem value={2}>The guardian</MenuItem>
+              <MenuItem value={3}>New York times</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={3} lg={3} xl={3}>
+          <FormControl fullWidth>
+            <InputLabel id="category-label">Select Category</InputLabel>
+            <Select
+              labelId="category-label"
+              id="category-select"
+              multiple
+              value={filterCategories}
+              onChange={(e) => setFilterCategories(e.target.value)}
+              label="Select Category"
+            >
+              {categories.map((category) => (
+                <MenuItem key={category} value={category}>
+                  {category}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={3} lg={3} xl={3}>
+          <FormControl fullWidth>
+            <InputLabel id="author-label">Select Author</InputLabel>
+            <Select
+              labelId="author-label"
+              id="author-select"
+              multiple
+              value={filterAuthors}
+              onChange={(e) => setFilterAuthors(e.target.value)}
+              label="Select Author"
+            >
+              {authors.map((author) => (
+                <MenuItem key={author} value={author}>
+                  {author}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={3} lg={3} xl={3}>
+          <TextField
+            id="date"
+            label="Select Publish Date"
+            type="date"
+            value={filterDate}
+            onChange={(e) => setFilterDate(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            fullWidth
+          />
+        </Grid>
+      </Grid>
+      <Grid container justifyContent="center" spacing={5} mt={1}>
+        <Grid item>
+          <Button variant="contained" onClick={filterData}>
+            Filter
+          </Button>
+        </Grid>
+      </Grid>
+    </>
   );
 };
 

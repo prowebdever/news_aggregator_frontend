@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Row, Col } from 'react-bootstrap';
+import { Grid } from '@mui/material';
 import NewsItem from '../NewsItem/NewsItem';
 import Spinner from '../Spinner/Spinner';
 import Search from './Search';
@@ -71,13 +71,13 @@ function News(props) {
         {header}
       </Header>
       <Container>
-        <Row>
-          <Col sm={12} md={4} lg={4} xl={3}>
+        <Grid container spacing={2} mb={6}>
+          <Grid item xs={12} md={4} lg={4} xl={3}>
             <Search searchNews={searchNews} />
-          </Col>
-        </Row>
+          </Grid>
+        </Grid>
+        <Filter setFilter={setFilter} />
       </Container>
-      <Filter setFilter={setFilter} />
       {loading && <Spinner />}
       <InfiniteScroll
         dataLength={articles.length}
@@ -86,9 +86,9 @@ function News(props) {
         loader={<Spinner />}
       >
         <Container>
-          <Row>
+          <Grid container spacing={2} mt={6}>
             {articles.map((element) => (
-              <Col sm={12} md={6} lg={4} xl={3} style={card} key={element.id}>
+              <Grid item xs={12} md={6} lg={4} xl={3} key={element.id}>
                 <NewsItem
                   title={element.title}
                   description={element.body}
@@ -100,9 +100,9 @@ function News(props) {
                   imageUrl={element.thumb}
                   urlNews={element.web_url}
                 />
-              </Col>
+              </Grid>
             ))}
-          </Row>
+          </Grid>
         </Container>
       </InfiniteScroll>
     </>

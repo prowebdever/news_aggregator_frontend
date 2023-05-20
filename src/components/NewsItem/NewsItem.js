@@ -1,5 +1,6 @@
-import React from 'react';
-import { Button, Card } from 'react-bootstrap';
+import {
+  Card, CardContent, CardMedia, Typography, Button
+} from '@mui/material';
 import Details from './Details';
 import {
   card, img, btn, txt
@@ -9,17 +10,22 @@ function NewsItem(props) {
   const {
     imageUrl, alt, description, title, author, category, date, urlNews
   } = props;
+
   return (
-    <Card style={card}>
-      <Card.Img style={img} variant="top" src={imageUrl} alt={alt} />
-      <Card.Body>
-        <Card.Title>{title}</Card.Title>
-        <Card.Text style={txt}>
+    <Card sx={card}>
+      <CardMedia component="img" sx={img} image={imageUrl} alt={alt} />
+      <CardContent>
+        <Typography variant="h5" component="h2">
+          {title}
+        </Typography>
+        <Typography sx={txt} variant="body2" component="p">
           {description}
-        </Card.Text>
+        </Typography>
         <Details author={author} category={category} date={date} />
-        <Button href={urlNews} target="_blank" style={btn}>Show more...</Button>
-      </Card.Body>
+        <Button href={urlNews} target="_blank" sx={btn} variant="contained">
+          Show more...
+        </Button>
+      </CardContent>
     </Card>
   );
 }

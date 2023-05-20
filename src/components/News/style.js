@@ -27,7 +27,6 @@ export const selectStyle = {
   fontWeight: '400',
   lineHeight: '1.5',
   color: '#212529',
-  backgroundColor: '#def',
 };
 
 export const DateStyle = {
@@ -37,7 +36,6 @@ export const DateStyle = {
   fontWeight: '400',
   lineHeight: '1.5',
   color: '#212529',
-  backgroundColor: '#fff',
 };
 export const formButton = {
   margin: '20px auto',

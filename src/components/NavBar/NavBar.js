@@ -1,51 +1,105 @@
-import React from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { Navbar, Nav } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
-import { navBar, navBrand, nav } from './style';
+import { useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import {
+  AppBar, Toolbar, Typography, Button, Link, Menu, MenuItem, Box, IconButton
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { navbarBrand, navs } from '../../config/config';
 import { isLoggedIn, setLoggedOut } from '../../utils/auth';
 import HttpService from '../../services/httpService';
 
-function NavBar(props) {
-  const logout = () => {
-    HttpService.get('logout', '', true).then((response) => {
-      if (response.status === 204) {
-        setLoggedOut();
-        props.setLoggedIn(false);
-        window.location.reload();
-      }
-    });
+const NavBar = ({ loggedIn, setLoggedIn }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate();
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  let loggedInStatus = props.loggedIn;
-  if (isLoggedIn()) {
-    loggedInStatus = true;
-  }
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const logout = async () => {
+    try {
+      const response = await HttpService.get('logout', '', true);
+      if (response.status === 204) {
+        setLoggedOut();
+        setLoggedIn(false);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <Navbar style={navBar} variant="dark" expand="lg" fixed="top">
-      <Navbar.Brand style={navBrand} href="/">{navbarBrand}</Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav style={nav} className="mr-auto">
-          <LinkContainer to="/" key={uuidv4()}>
-            <Nav.Link className="ml-2">Home</Nav.Link>
-          </LinkContainer>
-          {navs.map((navs) => loggedInStatus === navs.loggedIn && (
-            <LinkContainer to={navs.page} key={uuidv4()}>
-              <Nav.Link className="ml-2">{navs.nav}</Nav.Link>
-            </LinkContainer>
-          ))}
-          {
-            loggedInStatus && (
-              <LinkContainer to="" key={uuidv4()} onClick={() => { logout(); }}>
-                <Nav.Link className="ml-2">Logout</Nav.Link>
-              </LinkContainer>
-            )
-          }
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
+    <AppBar position="fixed">
+      <Toolbar>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Link component={RouterLink} to="/" color="inherit" underline="none">
+            {navbarBrand}
+          </Link>
+        </Typography>
+        <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
+          <Button color="inherit" component={RouterLink} to="/">
+            Home
+          </Button>
+          {loggedIn ? (
+            <Button color="inherit" onClick={() => { handleMenuClose(); logout(); }}>
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Button color="inherit" component={RouterLink} to="/register">
+                Register
+              </Button>
+              <Button color="inherit" component={RouterLink} to="/login">
+                Login
+              </Button>
+            </>
+          )}
+        </Box>
+        <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenuOpen}
+            color="inherit"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Menu
+            id="menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleMenuClose} component={RouterLink} to="/">
+              Home
+            </MenuItem>
+            {navs.map((nav) => loggedIn === nav.loggedIn && (
+              <MenuItem
+                key={nav.nav}
+                onClick={handleMenuClose}
+                component={RouterLink}
+                to={nav.page}
+              >
+                {nav.nav}
+              </MenuItem>
+            ))}
+            {loggedIn && (
+              <MenuItem onClick={() => { handleMenuClose(); logout(); }}>
+                Logout
+              </MenuItem>
+            )}
+          </Menu>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
-}
+};
+
 export default NavBar;

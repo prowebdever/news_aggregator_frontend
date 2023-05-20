@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Row, Col, Form, Button, Alert
-} from 'react-bootstrap';
+  Box, Grid, TextField, Button, Alert
+} from '@mui/material';
 import Spinner from '../Spinner/Spinner';
 import HttpService from '../../services/httpService';
-import {
-  Header, Container, JustifyCenter, formButton
-} from './style';
+import { Header } from './style';
 
 const Login = ({ setProgress, setLoggedIn }) => {
   const [submitted, setSubmitted] = useState(false);
@@ -62,53 +60,51 @@ const Login = ({ setProgress, setLoggedIn }) => {
 
   return (
     <>
-      <Header>Login</Header>
-      <Container>
-        <Row className="justify-content-center">
-          <Col sm={12} md={8} lg={4} xl={3}>
-            {errorMessage && (
-              <Alert key="danger" variant="danger">
-                {errorMessage}
-              </Alert>
-            )}
-            <Form noValidate onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Control
-                  type="email"
-                  placeholder="Enter email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  isInvalid={submitted && emailErrors.length > 0}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {emailErrors.map((error) => (
-                    <div key={error}>{error}</div>
-                  ))}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Control
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  isInvalid={submitted && passwordErrors.length > 0}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {passwordErrors.map((error) => (
-                    <div key={error}>{error}</div>
-                  ))}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Button variant="primary" type="submit" style={formButton} disabled={loading}>Login</Button>
-            </Form>
-          </Col>
-        </Row>
-      </Container>
+      <Box sx={{ textAlign: 'center' }} component="header" variant="h4" mt={12} mb={2}>
+        <Header>
+          Login
+        </Header>
+      </Box>
+      <Grid container justifyContent="center">
+        <Grid item xs={12} md={8} lg={4} xl={3}>
+          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+          <Box component="form" noValidate onSubmit={handleSubmit}>
+            <TextField
+              id="email"
+              label="Email"
+              type="email"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              fullWidth
+              error={submitted && emailErrors.length > 0}
+              helperText={emailErrors.map((error) => (
+                <div key={error}>{error}</div>
+              ))}
+              margin="normal"
+            />
+            <TextField
+              id="password"
+              label="Password"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              fullWidth
+              error={submitted && passwordErrors.length > 0}
+              helperText={passwordErrors.map((error) => (
+                <div key={error}>{error}</div>
+              ))}
+              margin="normal"
+            />
+            <Button variant="contained" type="submit" disabled={loading} fullWidth>
+              Login
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
       {loading && <Spinner />}
     </>
   );

@@ -8,3 +8,4 @@ bin
 .firebase
 .dist
 yarn.lock
+package-lock.json
