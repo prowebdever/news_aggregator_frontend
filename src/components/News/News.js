@@ -71,7 +71,7 @@ function News(props) {
         {header}
       </Header>
       <Container>
-        <Grid container spacing={2} mb={6}>
+        <Grid container justifyContent="center" spacing={2} mb={6}>
           <Grid item xs={12} md={4} lg={4} xl={3}>
             <Search searchNews={searchNews} />
           </Grid>

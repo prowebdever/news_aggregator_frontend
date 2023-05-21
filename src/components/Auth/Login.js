@@ -33,7 +33,7 @@ const Login = ({ setProgress, setLoggedIn }) => {
 
     try {
       const response = await HttpService.post('login', { email, password }, false);
-      console.log('response', response);
+
       setProgress(70);
 
       if (response.data.status.error) {

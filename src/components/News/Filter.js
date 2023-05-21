@@ -31,13 +31,12 @@ const Filter = (props) => {
         const parsedData = response.data.data;
         setCategories(parsedData.categories);
         setAuthors(parsedData.authors);
-        const preferredSources = parsedData.preferred_sources.split(',');
-        const preferredCategories = parsedData.preferred_categories.split(',');
-        const preferredAuthors = parsedData.preferred_authors.split(',');
-        if (parsedData.preferred_sources) { setFilterSources(preferredSources); }
-        if (parsedData.preferred_categories) { setFilterCategories(preferredCategories); }
-        if (parsedData.preferred_authors) { setFilterAuthors(preferredAuthors); }
-        setFilterDate(preferredDate);
+        const preferredSources = parsedData.preferred_sources.split(',').filter((value) => (value !== ''));
+        const preferredCategories = parsedData.preferred_categories.split(',').filter((value) => (value !== ''));
+        const preferredAuthors = parsedData.preferred_authors.split(',').filter((value) => (value !== ''));
+        if (preferredSources.length) { setFilterSources(preferredSources.slice()); }
+        if (preferredCategories.length) { setFilterCategories(preferredCategories); }
+        if (preferredAuthors.length) { setFilterAuthors(preferredAuthors); }
       });
     } catch (error) {
       console.error(error);
